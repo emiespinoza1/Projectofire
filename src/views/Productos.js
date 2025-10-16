@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Button } from "react-native";
 import { db } from "../database/firebaseconfig.js";
 import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from 'firebase/firestore';
 import ListaProductos from "../components/ListaProductos";
 import FormularioProductos from "../components/FormularioProductos";
 import TablaProductos from "../components/TablaProductos.js";
 
-const Productos = () => {
+const Productos = ({ cerrarSesion }) => {
   const [productos, setProductos] = useState([]);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [productoId, setProductoId] = useState(null);
@@ -29,7 +29,7 @@ const Productos = () => {
     }
   };
 
-    const eliminarProducto = async (id) => {
+  const eliminarProducto = async (id) => {
     try {
       await deleteDoc(doc(db, "Productos", id));
       cargarDatos(); // recarga lista 
@@ -38,14 +38,14 @@ const Productos = () => {
     }
   };
 
-    const manejoCambio = (nombre, valor) => {
+  const manejoCambio = (nombre, valor) => {
     setNuevoProducto((prev) => ({
       ...prev,
       [nombre]: valor,
     }));
   };
 
-    const guardarProducto = async () => {
+  const guardarProducto = async () => {
     try {
       if (nuevoProducto.nombre && nuevoProducto.precio) {
 
@@ -64,7 +64,7 @@ const Productos = () => {
     }
   };
 
-    const actualizarProducto = async () => {
+  const actualizarProducto = async () => {
     try{
       if(nuevoProducto.nombre && nuevoProducto.precio) {
         
@@ -87,7 +87,7 @@ const Productos = () => {
     }
   };
 
-    const editarProducto = (producto) => {
+  const editarProducto = (producto) => {
     setNuevoProducto({
       nombre: producto.nombre,
       precio: producto.precio.toString(),
@@ -102,6 +102,9 @@ const Productos = () => {
 
   return (
     <View style={styles.container}>
+      {/* Botón de Cerrar Sesión - Agregado según la guía */}
+      <Button title="Cerrar Sesión" onPress={cerrarSesion} color="#e63946" />
+      
       <FormularioProductos
        nuevoProducto={nuevoProducto}
        manejoCambio={manejoCambio}
